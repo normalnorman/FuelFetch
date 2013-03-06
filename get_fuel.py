@@ -32,7 +32,7 @@ if access_token == None:
 
 root_url = 'https://api.nike.com/me/sport'
 sport_url =  root_url + '?access_token=' + access_token
-activity_url = root_url + '/activities?access_token=' + access_token
+activity_url = root_url + '/activities?access_token=' + access_token + '&count=2'
 
 current_streak = 0
 total_fuel = 0
