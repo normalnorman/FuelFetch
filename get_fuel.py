@@ -54,10 +54,23 @@ except IOError, e:
     sys.exit(1)
 
 data = json.load(handle)
+summaries = data['summaries']
+records = []
 
-total_fuel = data['summaries'][0]['records']['lifetimeFuel']
-current_streak = data['summaries'][1]['records']['currentStreak']
-daily_goal = data['summaries'][1]['records']['dailyGoalTargetValue']
+for summary in summaries:
+    if summary['experienceType'] == 'FUELBAND':
+        records = summary['records']
+
+for record in records:
+    if record['recordType'] == 'LIFETIMEFUEL':
+        total_fuel = record['recordValue']
+
+    if record['recordType'] == 'CURRENTSTREAK':
+        current_streak = record['recordValue']
+
+    if record['recordType'] == 'DAILYGOALTARGETVALUE':
+        daily_goal = float(record['recordValue'])
+
 
 req = urllib2.Request(activity_url)
 req.add_header("appid", "fuelband")
@@ -77,20 +90,20 @@ last_sync = datetime.datetime(*map(int, re.split('[^\d]', last_data['startTime']
 current_date = current_date = datetime.datetime.now()
 
 if last_sync.date() >= current_date.date():
-    todays_fuel = last_data['fuel']
+    todays_fuel = last_data['metricSummary']['fuel']
 
     #print('calories: ' + str(last_data['calories']))
     #print('distance: ' + str(last_data['distance']))
 
-    goal_gap = int(((todays_fuel / daily_goal) * 100) / 5)
+    goal_gap = int(((float(todays_fuel) / daily_goal) * 100) / 5)
 
     for index in range(total_dots):
         if index < goal_gap:
-            sys.stdout.write(band_colors[index] + ".  ")
+            sys.stdout.write(band_colors[index] + ".   ")
         else:
-            sys.stdout.write(" ")
+            sys.stdout.write("  ")
 
-    sys.stdout.write(band_colors[21] + ".  ") #far right dot.  I tried to make it blink with the color '\033[32;5m' but GeekTools wasn't having it
+    sys.stdout.write(band_colors[21] + ".   ") #far right dot.  I tried to make it blink with the color '\033[32;5m' but GeekTools wasn't having it
 else:
   print('no sync today')
 
@@ -99,5 +112,5 @@ if total_fuel > 1000000:
 else:
     total_fuel = str(round(float(total_fuel) / float(1000), 2)) + 'K'
 
-print('\033[37m' + '\n\nNIKEFUEL: ' + str(todays_fuel) + '\t\tGOAL: ' + str(int(daily_goal)))
-print ('\ntotal:' +  total_fuel + '\t\t streak: ' + str(current_streak) + ' days')
+print('\033[37m' + '\n\nNIKEFUEL: ' + str(todays_fuel) + '\t\t   GOAL: ' + str(int(daily_goal)))
+print ('\ntotal:' +  total_fuel + '\t\t\tstreak: ' + str(current_streak) + ' days')
