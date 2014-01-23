@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Command</key>
-	<string>python /Users/rnorman/Documents/scripts/nike_fuel.py e325161f2bb9bfc64718ccaf5442ee3a</string>
+	<string>python /Users/rnorman/Documents/scripts/get_fuel.py e325161f2bb9bfc64718ccaf5442ee3a</string>
 	<key>DropShadow</key>
 	<false/>
 	<key>FailureImage</key>
